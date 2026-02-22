@@ -84,7 +84,7 @@ func main() {
 	router.Use(middleware.URLFormat)
 	router.Use(cors.Handler(cors.Options{
 		AllowedOrigins: []string{"http://localhost:3000", "http://seam-s.shop", "https://seam-s.shop"},
-		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
 		AllowedHeaders: []string{"Accept", "Authorization", "Content-Type"},
 	}))
 
