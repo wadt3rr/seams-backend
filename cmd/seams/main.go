@@ -17,6 +17,7 @@ import (
 	getOrderByID "seams-backend/internal/http-server/handlers/orders/get"
 	listOrders "seams-backend/internal/http-server/handlers/orders/list"
 	orderSave "seams-backend/internal/http-server/handlers/orders/save"
+	updateOrder "seams-backend/internal/http-server/handlers/orders/update"
 	getProductsByCategory "seams-backend/internal/http-server/handlers/products/byCategory"
 	getProductBySku "seams-backend/internal/http-server/handlers/products/bySku"
 	listProducts "seams-backend/internal/http-server/handlers/products/list"
@@ -110,6 +111,7 @@ func main() {
 	router.Route("/track", func(r chi.Router) {
 		r.Get("/", listOrdersByEmail.New(log, orderService))
 		r.Get("/{id}", getOrderByID.New(log, orderService))
+		r.Patch("/{id}/cancel", updateOrder.New(log, storage))
 	})
 
 	router.Route("/categories", func(r chi.Router) {

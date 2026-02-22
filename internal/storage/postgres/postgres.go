@@ -438,6 +438,20 @@ func (s *Storage) ListOrders(ctx context.Context, filter OrderFilter) ([]*models
 	return orders, nil
 }
 
+// UpdateOrder обновляет статус заказа в базе данных
+func (s *Storage) UpdateOrder(ctx context.Context, orderID uuid.UUID, status string) (bool, error) {
+	const op = "postgres.Storage.UpdateOrder"
+
+	res, err := s.pool.Exec(ctx, `UPDATE orders SET status = $1, updated_at = NOW() WHERE id = $2`, status, orderID)
+	if err != nil {
+		return false, fmt.Errorf("%s: %w", op, err)
+	}
+	if res.RowsAffected() == 0 {
+		return false, nil
+	}
+	return true, nil
+}
+
 // SaveCustomer сохраняет клиента в базе данных
 func (s *Storage) SaveCustomer(ctx context.Context, customer *models.Customer) (uuid.UUID, error) {
 	const op = "postgres.Storage.CreateCustomer"
