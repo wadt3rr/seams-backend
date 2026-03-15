@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/signal"
 	"seams-backend/internal/config"
+	"seams-backend/internal/http-server/handlers"
 	listCategories "seams-backend/internal/http-server/handlers/categories/list"
 	getCustomerByID "seams-backend/internal/http-server/handlers/customers/get"
 	listCustomers "seams-backend/internal/http-server/handlers/customers/list"
@@ -28,6 +29,7 @@ import (
 	orderService "seams-backend/internal/services/orderService"
 	productService "seams-backend/internal/services/productService"
 	requestservice "seams-backend/internal/services/requestService"
+	"seams-backend/internal/ws"
 
 	"seams-backend/internal/storage/postgres"
 	"syscall"
@@ -97,6 +99,12 @@ func main() {
 	})
 
 	orderService := orderService.NewOrderService(storage)
+
+	hub := ws.NewHub()
+	go hub.Run()
+
+	supportWS := handlers.NewSupportWS(hub)
+	router.HandleFunc("/ws/support", supportWS.Handle)
 
 	router.Route("/admin", func(r chi.Router) {
 		r.Get("/orders", listOrders.New(log, storage))
