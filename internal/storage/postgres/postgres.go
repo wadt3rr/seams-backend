@@ -320,6 +320,8 @@ func (s *Storage) SaveOrder(ctx context.Context, order *models.Order) error {
 		order.CustomerID,
 		order.Status,
 		order.Total,
+		order.PaymentMethod,
+		order.FullfillmentMethod,
 	).Scan(&order.CreatedAt, &order.UpdatedAt)
 	if err != nil {
 		return fmt.Errorf("%s: insert order: %w", op, err)
@@ -342,8 +344,6 @@ func (s *Storage) SaveOrder(ctx context.Context, order *models.Order) error {
 			item.Quantity,
 			item.Price,
 			item.Total,
-			order.PaymentMethod,
-			order.FullfillmentMethod,
 		)
 		if err != nil {
 			return fmt.Errorf("%s: insert order item: %w", op, err)
