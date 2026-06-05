@@ -313,8 +313,8 @@ func (s *Storage) SaveOrder(ctx context.Context, order *models.Order) error {
 	// вставка заказа
 	err = tx.QueryRow(
 		ctx,
-		`INSERT INTO orders (id, customer_id, status, total)
-		 VALUES ($1, $2, $3, $4)
+		`INSERT INTO orders (id, customer_id, status, total, payment_method, fullfillment_method)
+		 VALUES ($1, $2, $3, $4, $5, $6)
 		 RETURNING created_at, updated_at`,
 		order.ID,
 		order.CustomerID,
@@ -342,6 +342,8 @@ func (s *Storage) SaveOrder(ctx context.Context, order *models.Order) error {
 			item.Quantity,
 			item.Price,
 			item.Total,
+			order.PaymentMethod,
+			order.FullfillmentMethod,
 		)
 		if err != nil {
 			return fmt.Errorf("%s: insert order item: %w", op, err)
